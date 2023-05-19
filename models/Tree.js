@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Sequelize } = require('sequelize');
 const sequelize = require('../dbConnect');
 const UserTree = require('./UserTree');
 
@@ -34,7 +34,7 @@ const Tree = sequelize.define('tree', {
 }, {
     createdAt: 'created_at',
     updatedAt: false,
-    tableName: 'trees'
+    tableName: 'trees',
 });
 
 Tree.addHook('afterCreate', async (tree, options) => {
@@ -43,5 +43,11 @@ Tree.addHook('afterCreate', async (tree, options) => {
         tree_id: tree.id
     });
 });
+
+Tree.addHook('beforeUpdate', async (tree, options) => {
+    if (tree.dataValues.skin_id !== tree._previousDataValues.skin_id) {
+        tree.dataValues.count = 0;
+    }
+})
 
 module.exports = Tree;

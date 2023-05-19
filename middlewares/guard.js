@@ -27,7 +27,11 @@ const guard = catchAsync(async (req, res, next) => {
         return next(new AppError('User not found', 401));
     }
 
-    req.user_id = decoded.sub
+    req.user = {
+        id: decoded.sub,
+        name: user.name,
+        avatar: user.avatar
+    };
     next();
 });
 

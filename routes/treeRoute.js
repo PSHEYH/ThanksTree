@@ -1,6 +1,7 @@
 const express = require("express");
 const guard = require('../middlewares/guard');
 const treeController = require('../controllers/treeController');
+const isTreeOwner = require("../middlewares/isTreeOwner");
 const router = express.Router();
 
 router.route('/').post(guard, treeController.createTree).get(guard, treeController.getTrees);
@@ -12,4 +13,6 @@ router.route('/:id')
     .post(guard, treeController.joinToTree);
 
 router.route('/exit/:id').delete(guard, treeController.exitFromTree);
+router.route('/:id/users/:user_id').delete(guard, isTreeOwner, treeController.deleteUserFromTree);
+
 module.exports = router;

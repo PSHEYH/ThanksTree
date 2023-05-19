@@ -193,7 +193,7 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.deleteAccount = catchAsync(async (req, res, next) => {
     await User.destroy({
         where: {
-            id: req.user_id
+            id: req.user.id
         }
     });
 

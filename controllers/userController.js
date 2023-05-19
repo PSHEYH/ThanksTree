@@ -6,7 +6,7 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
 
     await User.update(req.body, {
         where: {
-            id: req.user_id
+            id: req.user.id
         }
     });
 
@@ -18,7 +18,7 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
 
 exports.getProfile = catchAsync(async (req, res, next) => {
 
-    const user = await User.findByPk(req.user_id, {
+    const user = await User.findByPk(req.user.id, {
         attributes: ['name', 'email', 'avatar', 'lang', 'is_notify']
     });
     res.status(200).json(user);
@@ -27,7 +27,7 @@ exports.getProfile = catchAsync(async (req, res, next) => {
 exports.saveBackup = catchAsync(async (req, res, next) => {
 
     await Backup.create({
-        user_id: req.user_id,
+        user_id: req.user.id,
         backup: req.body.backup
     });
     res.status(201).json({
@@ -41,7 +41,7 @@ exports.getBackup = catchAsync(async (req, res, next) => {
             ['created_at', 'DESC']
         ],
         where: {
-            user_id: req.user_id
+            user_id: req.user.id
         },
         attributes: {
             include: ['backup'],

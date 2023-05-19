@@ -19,14 +19,14 @@ const Appreciation = sequelize.define('appreciations', {
             len: [0, 65]
         }
     },
-    title: {
+    question: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
-            len: [0, 80]
+            len: [0, 200]
         }
     },
-    appreciation: {
+    gratitude: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
