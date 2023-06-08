@@ -53,6 +53,11 @@ const User = sequelize.define('user', {
         defaultValue: true,
         allowNull: false
     },
+    is_authorized: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false
+    },
     refresh_key: {
         type: DataTypes.STRING
     }

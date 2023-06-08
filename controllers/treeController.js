@@ -8,6 +8,9 @@ const Tree = require('../models/Tree');
 const UserTree = require('../models/UserTree');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/User');
+const sendPush = require('../utils/sendPush');
+const notification = require('../dictionary/joinTreeDictionary');
+const AppError = require('../utils/app.error');
 
 Tree.belongsToMany(User, { through: UserTree, foreignKey: 'tree_id' });
 User.belongsToMany(Tree, { through: UserTree, foreignKey: 'user_id' });
@@ -87,13 +90,18 @@ exports.getTreeById = catchAsync(async (req, res, next) => {
         include: {
             model: User,
             as: 'users',
-            attributes: ['name', 'id'],
+            attributes: ['name', 'id', 'avatar'],
             through: { attributes: [] }
         },
-        attributes: ['id', 'name', 'count', 'skin_id', 'is_leaf_falls'],
+        attributes: ['id', 'name', 'count', 'skin_id', 'is_leaf_falls', 'creator_id', 'created_at'],
     });
+    if (!tree) {
+        return next(new AppError('Tree not found', 400));
+    }
 
     tree.dataValues.users = tree.users.filter(el => el.id !== req.user.id);
+    tree.dataValues['is_creator'] = tree.creator_id == req.user.id;
+    delete tree.dataValues.creator_id;
 
     res.status(200).json(tree);
 });
@@ -111,13 +119,10 @@ exports.joinToTree = catchAsync(async (req, res, next) => {
         res.status(400).json({
             message: "You already in tree"
         });
-    }
-    const tree = await Tree.findByPk(req.params.id, {
-        attributes: {
-            exclude: ['creator_id']
-        }
-    });
 
+        return;
+    }
+    const tree = await Tree.findByPk(req.params.id);
     if (!tree) {
         res.status(400).json({
             "message": "Tree doesn't exist"
@@ -130,17 +135,23 @@ exports.joinToTree = catchAsync(async (req, res, next) => {
         tree_id: req.params.id,
         user_id: req.user.id
     });
+    const creator = await User.findByPk(tree.creator_id);
+
+    await sendPush({}, creator.fcm_token, notification(creator.lang, req.user.name));
 
     res.status(200).json(tree);
 });
 
 exports.deleteUserFromTree = catchAsync(async (req, res, next) => {
+
     await UserTree.destroy({
-        user_id: req.params.user_id,
-        tree_id: req.params.id
+        where: {
+            user_id: req.params.user_id,
+            tree_id: req.params.id
+        }
     });
 
-    res.status(200);
+    res.status(204).json({});
 })
 
 exports.exitFromTree = catchAsync(async (req, res, next) => {
@@ -212,6 +223,8 @@ exports.getMyTree = async (req, res, next) => {
         });
     } catch (err) {
         console.error(err)
-        res.status(500).json({});
+        res.status(200).json({
+            backup: null
+        });
     }
 }

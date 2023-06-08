@@ -13,6 +13,7 @@ router.route('/auth/loginApple').post(validateRequest, authController.loginApple
 router.route('/auth/refreshToken').post(validateRequest, authController.refreshToken);
 router.route('/auth/deleteAccount').delete(guard, authController.deleteAccount);
 router.route('/auth/login').post(validateRequest, authController.login);
+router.route('/auth/logout').post(guard, authController.logout);
 
 router.route('/profile')
     .get(guard, validateRequest, userController.getProfile)

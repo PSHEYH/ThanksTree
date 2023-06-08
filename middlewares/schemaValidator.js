@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 
 module.exports = (Schemas) => {
 
-    const _supportedMethods = ['post', 'put'];
+    const _supportedMethods = ['post', 'put', 'patch'];
 
     const _validationOptions = {
         abortEarly: false,  // abort after the last validation error

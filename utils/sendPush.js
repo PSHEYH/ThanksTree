@@ -28,4 +28,7 @@ module.exports = async (data, fcm_token, notification) => {
     if (dataFromResp.failure > 0) {
         console.log('ERROR', dataFromResp.results[0].error);
     }
+    else {
+        console.log("successful send push");
+    }
 }

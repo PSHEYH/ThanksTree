@@ -10,7 +10,7 @@ const router = express.Router();
 router.route('/').post(guard, validateRequest, appreciationController.createAppreciation);
 router.route('/:id')
     .get(guard, appreciationController.listAppreciation)
-    .patch(guard, appreciationController.updateAppreciation)
+    .patch(guard, validateRequest, appreciationController.updateAppreciation)
     .delete(guard, appreciationController.deleteAppreciation);
 
 module.exports = router;

@@ -15,7 +15,6 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
     });
 });
 
-
 exports.getProfile = catchAsync(async (req, res, next) => {
 
     const user = await User.findByPk(req.user.id, {

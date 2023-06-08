@@ -11,7 +11,7 @@ const loginSchema = Joi.object().keys({
 });
 
 const loginAppleSchema = Joi.object().keys({
-    identity_token: Joi.string().min(25).required(),
+    identity_token: Joi.string().min(0).required(),
     client_id: Joi.string().max(80).required(),
     fcm_token: Joi.string().min(50).max(250),
     lang: Joi.string().min(0).max(5),
@@ -32,11 +32,10 @@ const refreshTokenSchema = Joi.object().keys({
 });
 
 const updateProfile = Joi.object().keys({
-    name: Joi.string().min(2).max(60),
+    name: Joi.string().min(2).max(40),
     fcm_token: Joi.string().min(50).max(280),
     lang: Joi.string().max(5),
-    avatar: Joi.string().min(4).max(90),
-    notification_time: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/),
+    avatar: Joi.string().min(0).max(100),
     is_notify: Joi.boolean()
 });
 

@@ -30,7 +30,12 @@ const Tree = sequelize.define('tree', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
-    }
+    },
+    finish: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
 }, {
     createdAt: 'created_at',
     updatedAt: false,

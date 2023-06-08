@@ -80,6 +80,7 @@ exports.loginGoogle = catchAsync(async (req, res, next) => {
         refresh_key: refreshKey,
         password: hashPassword,
         email: googleData.email,
+        is_authorized: true
     };
 
     const [user, created] = await User.upsert(updateObject, {
@@ -131,7 +132,8 @@ exports.loginApple = catchAsync(async (req, res, next) => {
         ...req.body,
         password: hashPassword,
         refresh_key: refreshKey,
-        email: appleResponse.email
+        email: appleResponse.email,
+        is_authorized: true
     };
 
     const user = await upsertUser(updateObject, appleResponse.email);
@@ -189,6 +191,21 @@ exports.login = catchAsync(async (req, res, next) => {
         type: 'Bearer',
     });
 });
+
+exports.logout = catchAsync(async (req, res, next) => {
+    await User.update({
+        is_authorized: false
+    }, {
+        where: {
+            id: req.user.id
+        }
+    });
+
+    res.status(200).json({
+        status: "success"
+    });
+})
+
 
 exports.deleteAccount = catchAsync(async (req, res, next) => {
     await User.destroy({
